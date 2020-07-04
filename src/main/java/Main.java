@@ -1,5 +1,5 @@
 import factory.BikeFactory;
-import utils.ScannerSingleton;
+import singletone.ScannerSingleton;
 import model.Bike;
 import model.BikeModel;
 import org.apache.logging.log4j.LogManager;
@@ -118,7 +118,6 @@ public class Main {
         }
         return false;
     }
-
 
     private static void printActionMenu() {
         System.out.println("Please enter number of action to perform");

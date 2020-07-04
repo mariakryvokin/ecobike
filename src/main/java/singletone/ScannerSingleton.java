@@ -1,4 +1,4 @@
-package utils;
+package singletone;
 
 import java.util.Scanner;
 
@@ -27,4 +27,5 @@ public final class ScannerSingleton {
     public Scanner getScanner() {
         return scanner;
     }
+
 }

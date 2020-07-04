@@ -1,7 +1,7 @@
 package factory;
 
 import model.*;
-import utils.ScannerSingleton;
+import singletone.ScannerSingleton;
 
 import java.util.Scanner;
 

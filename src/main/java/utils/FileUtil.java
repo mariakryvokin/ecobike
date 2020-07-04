@@ -24,22 +24,26 @@ public class FileUtil {
             Map<BikeModel, List<Bike>> catalog = catalogService.getCatalog();
             Set<BikeModel> bikeModels = catalog.keySet();
             bikeModels.forEach(bikeModel -> {
-                List<Bike> bikes = catalog.get(bikeModel);
-                bikes.forEach(bike -> {
-                    StringJoiner joiner = new StringJoiner(catalogService.getBikeDetailsSpliterator());
-                    try {
-                        if (bikeModel == BikeModel.SPEEDELEC || bikeModel == BikeModel.EBIKE) {
-                            fileWriter.write(createEBikeLine(joiner, bike));
-                        } else {
-                            fileWriter.write(createFoldingBikeLine(joiner, bike));
-                        }
-                    } catch (IOException e) {
-                        logger.error(e);
-                    }
-                });
+                wrightBikesToFile(catalogService, fileWriter, catalog.get(bikeModel));
 
             });
         }
+    }
+
+    private void wrightBikesToFile(CatalogService catalogService, FileWriter fileWriter,
+                                   List<Bike> bikes) {
+        bikes.forEach(bike -> {
+            StringJoiner joiner = new StringJoiner(catalogService.getBikeDetailsSpliterator());
+            try {
+                if (bike.getModel() == BikeModel.SPEEDELEC || bike.getModel() == BikeModel.EBIKE) {
+                    fileWriter.write(createEBikeLine(joiner, bike));
+                } else {
+                    fileWriter.write(createFoldingBikeLine(joiner, bike));
+                }
+            } catch (IOException e) {
+                logger.error(e);
+            }
+        });
     }
 
     private String createEBikeLine(StringJoiner joiner, Bike bike) {

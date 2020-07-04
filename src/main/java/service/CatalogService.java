@@ -55,10 +55,16 @@ public class CatalogService {
     }
 
     public synchronized void addBikeToCatalog(String[] bikeDetails, BikeModel bikeModel, String brand) {
-        catalog.compute(bikeModel, (bikeModel1, bikes) -> {
-            bikes.add(createBike(brand, bikeModel, bikeDetails));
-            return bikes;
-        });
+        try{
+            Bike bike = createBike(brand, bikeModel, bikeDetails);
+            catalog.compute(bikeModel, (bikeModel1, bikes) -> {
+                bikes.add(bike);
+                return bikes;
+            });
+        }catch (IllegalArgumentException e){
+            logger.error(e);
+            logger.info("Parameters for bike creating was specified in wrong format. Please try again.");
+        }
     }
 
     private Optional<BikeModel> getBikeModel(String bikeDetail) {
@@ -74,18 +80,14 @@ public class CatalogService {
     }
 
     private Bike createBike(String brand, BikeModel bikeModel, String[] bikeDetails) {
-        try {
-            if (bikeModel == BikeModel.FOLDINGBIKE) {
-                return createFoldingBike(bikeModel, brand, Integer.parseInt(bikeDetails[1]),
-                        Integer.parseInt(bikeDetails[2]), Integer.parseInt(bikeDetails[3]),
-                        Boolean.parseBoolean(bikeDetails[4]), bikeDetails[5], Double.parseDouble(bikeDetails[6]));
-            }
-            return createEBike(bikeModel, brand, Integer.parseInt(bikeDetails[1]), Integer.parseInt(bikeDetails[2]),
-                    Boolean.parseBoolean(bikeDetails[3]), Integer.parseInt(bikeDetails[4]), bikeDetails[5],
-                    Double.parseDouble(bikeDetails[6]));
-        } catch (Exception e) {
-            throw new RuntimeException("parameters for bike in wrong format");
+        if (bikeModel == BikeModel.FOLDINGBIKE) {
+            return createFoldingBike(bikeModel, brand, Integer.parseInt(bikeDetails[1]),
+                    Integer.parseInt(bikeDetails[2]), Integer.parseInt(bikeDetails[3]),
+                    Boolean.parseBoolean(bikeDetails[4]), bikeDetails[5], Double.parseDouble(bikeDetails[6]));
         }
+        return createEBike(bikeModel, brand, Integer.parseInt(bikeDetails[1]), Integer.parseInt(bikeDetails[2]),
+                Boolean.parseBoolean(bikeDetails[3]), Integer.parseInt(bikeDetails[4]), bikeDetails[5],
+                Double.parseDouble(bikeDetails[6]));
 
     }
 
