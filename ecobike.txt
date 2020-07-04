@@ -1,0 +1,2 @@
+SPEEDELEC Booster 35;10900;false;13200;green;1279.0
+SPEEDELEC E-Scooter 60;15300;false;14800;marine;309.0

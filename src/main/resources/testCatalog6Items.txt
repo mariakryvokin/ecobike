@@ -1,0 +1,6 @@
+SPEEDELEC Booster; 35; 10900; false; 13200; green; 1279
+SPEEDELEC E-Scooter; 60; 15300; false; 14800; marine; 309
+E-BIKE Lankeleisi; 65; 24200; false; 10000; black; 2399
+E-BIKE Lankeleisi; 50; 21600; false; 30000; flame; 859
+FOLDING BIKE Benetti; 24; 27; 11400; false; rose; 1009
+FOLDING BIKE Benetti; 24; 6; 9400; true; silver; 1195
