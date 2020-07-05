@@ -21,6 +21,8 @@ public class CatalogService {
 
     public Map<BikeModel, List<Bike>> catalog = new HashMap<BikeModel, List<Bike>>();
     private String bikeDetailsSpliterator = ";";
+    private String wrongFormatOfParameterLogMessage = "Parameters for bike creating was specified in wrong format. " +
+            "Please try again.";
     private static Logger logger = LogManager.getRootLogger();
 
     public void init() {
@@ -54,17 +56,20 @@ public class CatalogService {
         return bikeDetail.replace(bikeModel.get().getType(), "").trim();
     }
 
-    public synchronized void addBikeToCatalog(String[] bikeDetails, BikeModel bikeModel, String brand) {
-        try{
+    public synchronized Optional<Bike> addBikeToCatalog(String[] bikeDetails, BikeModel bikeModel, String brand) {
+        Bike resultBike = null;
+        try {
             Bike bike = createBike(brand, bikeModel, bikeDetails);
-            catalog.compute(bikeModel, (bikeModel1, bikes) -> {
+            resultBike = bike;
+            catalog.compute(bikeModel, (model, bikes) -> {
                 bikes.add(bike);
                 return bikes;
             });
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             logger.error(e);
-            logger.info("Parameters for bike creating was specified in wrong format. Please try again.");
+            logger.info(wrongFormatOfParameterLogMessage);
         }
+        return Optional.ofNullable(resultBike);
     }
 
     private Optional<BikeModel> getBikeModel(String bikeDetail) {
@@ -113,16 +118,17 @@ public class CatalogService {
         return bikeDetailsSpliterator;
     }
 
-    public synchronized void doSearch(Bike searchedBike) {
+    public synchronized Optional<Bike> searchBike(Bike searchedBike) {
         switch (searchedBike.getModel()) {
             case FOLDINGBIKE: {
-                System.out.println("Fist searched bike:" + doSearchFoldingBike((FoldingBike) searchedBike).get());
-                break;
+                return doSearchFoldingBike((FoldingBike) searchedBike);
             }
             case SPEEDELEC:
             case EBIKE: {
-                System.out.println("Fist searched bike:" + doSearchEBike((EBike) searchedBike).get());
-                break;
+                return doSearchEBike((EBike) searchedBike);
+            }
+            default: {
+                throw new RuntimeException("Bike with not existing model");
             }
         }
     }
@@ -136,7 +142,9 @@ public class CatalogService {
                 (searchedBike.getPrice() == 0 || searchedBike.getPrice() == catalogBike.getPrice()) &&
                 (searchedBike.getColor() == null || searchedBike.getColor().isEmpty()
                         || searchedBike.getColor().equals(catalogBike.getColor())) &&
-                (searchedBike.getWeight() == 0 || searchedBike.getWeight() == catalogBike.getWeight());
+                (searchedBike.getWeight() == 0 || searchedBike.getWeight() == catalogBike.getWeight()) &&
+                (!searchedBike.isHasLights()
+                        || Boolean.compare(searchedBike.isHasLights(), catalogBike.isHasLights()) == 0);
     };
 
     private BiPredicate<EBike, EBike> isSearchedEBike = (catalogBike, searchedBike) -> {
@@ -148,7 +156,9 @@ public class CatalogService {
                 (searchedBike.getPrice() == 0 || searchedBike.getPrice() == catalogBike.getPrice()) &&
                 (searchedBike.getColor() == null || searchedBike.getColor().isEmpty()
                         || searchedBike.getColor().equals(catalogBike.getColor())) &&
-                (searchedBike.getWeight() == 0 || searchedBike.getWeight() == catalogBike.getWeight());
+                (searchedBike.getWeight() == 0 || searchedBike.getWeight() == catalogBike.getWeight()) &&
+                (!searchedBike.isHasLights()
+                        || Boolean.compare(searchedBike.isHasLights(), catalogBike.isHasLights()) == 0);
     };
 
     private Optional<Bike> doSearchFoldingBike(FoldingBike searchedBike) {
@@ -161,5 +171,9 @@ public class CatalogService {
         return catalog.get(searchedBike.getModel()).stream().filter(bike -> bike instanceof EBike).filter(bike -> {
             return isSearchedEBike.test((EBike) bike, searchedBike);
         }).findFirst();
+    }
+
+    public String getWrongFormatOfParameterLogMessage() {
+        return wrongFormatOfParameterLogMessage;
     }
 }

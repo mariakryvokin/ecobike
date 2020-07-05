@@ -9,6 +9,7 @@ import utils.FileUtil;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
@@ -66,8 +67,9 @@ public class Main {
                     case "5": {
                         BikeModel bikeModel = getBikeModel(scanner);
                         Bike searchedBike = BikeFactory.createBike(bikeModel);
-                        CompletableFuture.runAsync(()->{
-                            catalog.doSearch(searchedBike);
+                        CompletableFuture.runAsync(() -> {
+                            Optional<Bike> result = catalog.searchBike(searchedBike);
+                            System.out.println("Search result:" + (result.isPresent() ? result.get() : "empty"));
                         });
                         printActionMenu();
                         break;
@@ -88,10 +90,10 @@ public class Main {
 
     private static BikeModel getBikeModel(Scanner scanner) {
         boolean isModelValid = false;
-        while (!isModelValid){
+        while (!isModelValid) {
             System.out.println("Please enter bike model(FOLDINGBIKE,SPEEDELEC,EBIKE):");
             String inputBikeModel = scanner.nextLine();
-            if (Arrays.stream(BikeModel.values()).anyMatch(model -> model.name().equals(inputBikeModel))){
+            if (Arrays.stream(BikeModel.values()).anyMatch(model -> model.name().equals(inputBikeModel))) {
                 return BikeModel.valueOf(inputBikeModel);
             }
             System.out.println("Your intup is not valid. Pleas try again.");
@@ -112,7 +114,8 @@ public class Main {
     }
 
     private static boolean isNotAllParametersEntered(String[] bikeDetails) {
-        if (bikeDetails.length != 7) {
+        int amountOfParameters = 7;
+        if (bikeDetails.length != amountOfParameters) {
             logger.error("Next time please enter all parameters separated with ';' in one line");
             return true;
         }
