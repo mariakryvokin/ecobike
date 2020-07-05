@@ -1,0 +1,14 @@
+SPEEDELEC Booster; 35; 10900; false; 13200; green; 1279
+SPEEDELEC E-Scooter; 60; 15300; false; 14800; marine; 309
+E-BIKE Lankeleisi; 65; 24200; false; 10000; black; 2399
+E-BIKE Lankeleisi; 50; 21600; false; 30000; flame; 859
+FOLDING BIKE Benetti; 24; 27; 11400; false; rose; 1009
+FOLDING BIKE Benetti; 24; 6; 9400; true; silver; 1195
+FOLDING BIKE Formula; 16; 21; 12200; true; flame; 269
+E-BIKE ElectrO; 20; 19300; true; 14000; beige; 1025
+SPEEDELEC Dualtron; 30; 14400; true; 6500; dark gray; 1019
+FOLDING BIKE Intertool; 24; 21; 12900; true; coral; 1565
+E-BIKE Gazelle; 45; 25200; true; 11000; yellow; 855
+SPEEDELEC EcoRide; 15; 8300; true; 15600; blue; 1055
+LOL
+NotExisting EcoRide; 15; 8300; true; 15600; blue; 1055
