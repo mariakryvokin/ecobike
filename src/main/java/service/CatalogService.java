@@ -134,43 +134,48 @@ public class CatalogService {
     }
 
     private BiPredicate<FoldingBike, FoldingBike> isSearchedFoldingBike = (catalogBike, searchedBike) -> {
-        return searchedBike.getBrand().equals(catalogBike.getBrand()) &&
-                (searchedBike.getSizeOfWheels() == 0
-                        || catalogBike.getSizeOfWheels() == searchedBike.getSizeOfWheels()) &&
-                (searchedBike.getNumberOfGears() == 0
-                        || searchedBike.getNumberOfGears() == catalogBike.getNumberOfGears()) &&
-                (searchedBike.getPrice() == 0 || searchedBike.getPrice() == catalogBike.getPrice()) &&
-                (searchedBike.getColor() == null || searchedBike.getColor().isEmpty()
-                        || searchedBike.getColor().equals(catalogBike.getColor())) &&
-                (searchedBike.getWeight() == 0 || searchedBike.getWeight() == catalogBike.getWeight()) &&
-                (!searchedBike.isHasLights()
-                        || Boolean.compare(searchedBike.isHasLights(), catalogBike.isHasLights()) == 0);
+        return isBikeAttributesEqual(catalogBike, searchedBike) &&
+                (searchedBike.getNumberOfGears() == 0 ||
+                        searchedBike.getNumberOfGears() == catalogBike.getNumberOfGears()) &&
+                (searchedBike.getSizeOfWheels() == 0 ||
+                        catalogBike.getSizeOfWheels() == searchedBike.getSizeOfWheels());
     };
 
     private BiPredicate<EBike, EBike> isSearchedEBike = (catalogBike, searchedBike) -> {
-        return searchedBike.getBrand().equals(catalogBike.getBrand()) &&
-                (searchedBike.getBatteryCapacity() == 0
-                        || catalogBike.getBatteryCapacity() == searchedBike.getBatteryCapacity()) &&
-                (searchedBike.getMaximumSpeed() == 0
-                        || searchedBike.getMaximumSpeed() == catalogBike.getMaximumSpeed()) &&
-                (searchedBike.getPrice() == 0 || searchedBike.getPrice() == catalogBike.getPrice()) &&
-                (searchedBike.getColor() == null || searchedBike.getColor().isEmpty()
-                        || searchedBike.getColor().equals(catalogBike.getColor())) &&
-                (searchedBike.getWeight() == 0 || searchedBike.getWeight() == catalogBike.getWeight()) &&
-                (!searchedBike.isHasLights()
-                        || Boolean.compare(searchedBike.isHasLights(), catalogBike.isHasLights()) == 0);
+        return isBikeAttributesEqual(catalogBike, searchedBike) &&
+                (searchedBike.getMaximumSpeed() == 0 ||
+                        searchedBike.getMaximumSpeed() == catalogBike.getMaximumSpeed()) &&
+                (searchedBike.getBatteryCapacity() == 0 ||
+                        catalogBike.getBatteryCapacity() == searchedBike.getBatteryCapacity());
+
     };
 
+    private boolean isBikeAttributesEqual(Bike catalogBike, Bike searchedBike) {
+        return searchedBike.getBrand().equals(catalogBike.getBrand()) &&
+                (searchedBike.getPrice() == 0 || searchedBike.getPrice() == catalogBike.getPrice()) &&
+                (searchedBike.getColor() == null || searchedBike.getColor().isEmpty() ||
+                        searchedBike.getColor().equals(catalogBike.getColor())) &&
+                (searchedBike.getWeight() == 0 || searchedBike.getWeight() == catalogBike.getWeight()) &&
+                (!searchedBike.isHasLights() ||
+                        Boolean.compare(searchedBike.isHasLights(), catalogBike.isHasLights()) == 0);
+    }
+
     private Optional<Bike> doSearchFoldingBike(FoldingBike searchedBike) {
-        return catalog.get(searchedBike.getModel()).stream().filter(bike -> bike instanceof FoldingBike).filter(bike -> {
-            return isSearchedFoldingBike.test((FoldingBike) bike, searchedBike);
-        }).findFirst();
+        return catalog.get(searchedBike.getModel()).stream()
+                .filter(bike -> bike instanceof FoldingBike)
+                .filter(bike -> {
+                    return isSearchedFoldingBike.test((FoldingBike) bike, searchedBike);
+                })
+                .findFirst();
     }
 
     private Optional<Bike> doSearchEBike(EBike searchedBike) {
-        return catalog.get(searchedBike.getModel()).stream().filter(bike -> bike instanceof EBike).filter(bike -> {
-            return isSearchedEBike.test((EBike) bike, searchedBike);
-        }).findFirst();
+        return catalog.get(searchedBike.getModel()).stream()
+                .filter(bike -> bike instanceof EBike)
+                .filter(bike -> {
+                    return isSearchedEBike.test((EBike) bike, searchedBike);
+                })
+                .findFirst();
     }
 
     public String getWrongFormatOfParameterLogMessage() {
